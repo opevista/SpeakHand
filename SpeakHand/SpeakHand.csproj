@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <Nullable>enable</Nullable>
+    <LangVersion>8.0</LangVersion>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>SpeakHand</RootNamespace>
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.1.0" />
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
+    <Resource Include="thinking_face_animated.gif" />
+    <None Include="icon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+</Project>

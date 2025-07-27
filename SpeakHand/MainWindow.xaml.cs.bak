@@ -1,0 +1,281 @@
+        }
+
+        private void SaveDevicesToJson()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var json = JsonSerializer.Serialize(_allDevices, options);
+            File.WriteAllText(JsonFileName, json);
+        }
+
+        private void SetDefaultDevice(string deviceId)
+        {
+            try
+            {
+                var policyConfig = (IPolicyConfig)new PolicyConfigClient();
+                policyConfig.SetDefaultEndpoint(deviceId, ERole.eMultimedia);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}\nデフォルトデバイスの切り替えに失敗しました。");
+            }
+        }
+
+        // --- COMインターフェース定義 ---
+        // 必要なCOMインターフェースとクラスを追加
+        public enum ERole
+        {
+            eConsole = 0,
+            eMultimedia = 1,
+            eCommunications = 2
+        }
+
+        [System.Runtime.InteropServices.ComImport]
+        [System.Runtime.InteropServices.Guid("f8679f50-850a-41cf-9c72-430f290290c8")]
+        [System.Runtime.InteropServices.InterfaceType(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
+        interface IPolicyConfig
+        {
+            void GetMixFormat();
+            void GetDeviceFormat();
+            void ResetDeviceFormat();
+            void SetDeviceFormat();
+            void GetProcessingPeriod();
+            void SetProcessingPeriod();
+            void GetShareMode();
+            void SetShareMode();
+            void GetPropertyValue();
+            void SetPropertyValue();
+            void SetDefaultEndpoint([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)] string wszDeviceId, ERole eRole);
+            void SetEndpointVisibility();
+        }
+    }
+
+[System.Runtime.InteropServices.ComImport]
+[System.Runtime.InteropServices.Guid("870af99c-171d-4f9e-af0d-e63df40c2bc9")]
+class PolicyConfigClient { }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Reset failed: {ex.Message}");
+            }
+        }
+
+        private void ScanButton_Click(object sender, RoutedEventArgs e)
+        {
+            ScanAndLoadDevices();
+            MessageBox.Show("Device list has been refreshed.");
+        }
+
+        private void SetDefaultButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SpeakerComboBox.SelectedItem == null) return;
+            var selectedDeviceName = SpeakerComboBox.SelectedItem.ToString();
+            var deviceToSet = _allDevices.FirstOrDefault(d => d.Name == selectedDeviceName);
+            if (deviceToSet?.Id != null)
+            {
+                SetDefaultDevice(deviceToSet.Id);
+            }
+        }
+
+        private void FavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button?.Tag is string deviceId)
+            {
+                SetDefaultDevice(deviceId);
+            }
+        }
+
+        private void ToggleFavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SpeakerComboBox.SelectedItem == null) return;
+            var selectedDeviceName = SpeakerComboBox.SelectedItem.ToString();
+            var deviceToToggle = _allDevices.FirstOrDefault(d => d.Name == selectedDeviceName);
+
+            if (deviceToToggle != null)
+            {
+                deviceToToggle.IsFavorite = !deviceToToggle.IsFavorite;
+                SaveDevicesToJson();
+                UpdateFavoritesPanel();
+            }
+        }
+    }
+
+[System.Runtime.InteropServices.ComImport]
+[System.Runtime.InteropServices.Guid("870af99c-171d-4f9e-af0d-e63df40c2bc9")]
+class PolicyConfigClient { }
+        private void UpdateFavoritesPanel()
+        {
+            FavoritesPanel.Children.Clear();
+            var favoriteDevices = _allDevices.Where(d => d.IsFavorite).ToList();
+            if (FavoritesEmptyPanel != null)
+            {
+                FavoritesEmptyPanel.Visibility = favoriteDevices.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+            foreach (var device in favoriteDevices)
+            {
+                var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(5, 5, 5, 5) };
+
+                var button = new Button
+                {
+                    Content = device.Name,
+                    Tag = device.Id, // Store the ID for easy access
+                    Margin = new Thickness(0, 0, 5, 0)
+                };
+                button.Click += FavoriteButton_Click;
+
+                var removeButton = new Button
+                {
+                    Content = "×",
+                    Tag = device.Id,
+                    Width = 24,
+                    Height = 24,
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(0),
+                    ToolTip = "Remove from favorites"
+                };
+                removeButton.Click += RemoveFavoriteButton_Click;
+
+                panel.Children.Add(button);
+                panel.Children.Add(removeButton);
+                FavoritesPanel.Children.Add(panel);
+            }
+
+        // お気に入り解除ボタンのイベントハンドラ
+        private void RemoveFavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string deviceId)
+            {
+                var device = _allDevices.FirstOrDefault(d => d.Id == deviceId);
+                if (device != null)
+                {
+                    device.IsFavorite = false;
+                    SaveDevicesToJson();
+                    UpdateFavoritesPanel();
+                }
+            }
+        }
+        }
+
+        private void SaveDevicesToJson()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var json = JsonSerializer.Serialize(_allDevices, options);
+            File.WriteAllText(JsonFileName, json);
+        }
+
+        private void SetDefaultDevice(string deviceId)
+        {
+            try
+            {
+                var policyConfig = (IPolicyConfig)new PolicyConfigClient();
+                policyConfig.SetDefaultEndpoint(deviceId, ERole.eMultimedia);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}\nデフォルトデバイスの切り替えに失敗しました。");
+            }
+        }
+
+        // --- COMインターフェース定義 ---
+        // 必要なCOMインターフェースとクラスを追加
+        public enum ERole
+        {
+            eConsole = 0,
+            eMultimedia = 1,
+            eCommunications = 2
+        }
+
+        [System.Runtime.InteropServices.ComImport]
+        [System.Runtime.InteropServices.Guid("f8679f50-850a-41cf-9c72-430f290290c8")]
+        [System.Runtime.InteropServices.InterfaceType(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsIUnknown)]
+        interface IPolicyConfig
+        {
+            // Dummy methods to ensure the vtable layout is correct.
+            // We don't need to call these, but they must be present.
+            void GetMixFormat();
+            void GetDeviceFormat();
+            void ResetDeviceFormat();
+            void SetDeviceFormat();
+            void GetProcessingPeriod();
+            void SetProcessingPeriod();
+            void GetShareMode();
+            void SetShareMode();
+            void GetPropertyValue();
+            void SetPropertyValue();
+
+            // This is the method we are interested in.
+            // The HRESULT is automatically converted to an exception on failure.
+            void SetDefaultEndpoint([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)] string wszDeviceId, ERole eRole);
+
+            // Dummy method.
+            void SetEndpointVisibility();
+        }
+
+    }
+
+    }
+
+[System.Runtime.InteropServices.ComImport]
+[System.Runtime.InteropServices.Guid("870af99c-171d-4f9e-af0d-e63df40c2bc9")]
+class PolicyConfigClient { }
+
+
+        // --- Event Handlers ---
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (File.Exists(JsonFileName))
+                {
+                    File.Delete(JsonFileName);
+                }
+                ScanAndLoadDevices();
+                MessageBox.Show("Favorites and device list have been reset.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Reset failed: {ex.Message}");
+            }
+        }
+
+        private void ScanButton_Click(object sender, RoutedEventArgs e)
+        {
+            ScanAndLoadDevices();
+            MessageBox.Show("Device list has been refreshed.");
+        }
+
+        private void SetDefaultButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SpeakerComboBox.SelectedItem == null) return;
+            var selectedDeviceName = SpeakerComboBox.SelectedItem.ToString();
+            var deviceToSet = _allDevices.FirstOrDefault(d => d.Name == selectedDeviceName);
+            if (deviceToSet?.Id != null)
+            {
+                SetDefaultDevice(deviceToSet.Id);
+            }
+        }
+
+        private void FavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button?.Tag is string deviceId)
+            {
+                SetDefaultDevice(deviceId);
+            }
+        }
+
+        private void ToggleFavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SpeakerComboBox.SelectedItem == null) return;
+            var selectedDeviceName = SpeakerComboBox.SelectedItem.ToString();
+            var deviceToToggle = _allDevices.FirstOrDefault(d => d.Name == selectedDeviceName);
+
+            if (deviceToToggle != null)
+            {
+                deviceToToggle.IsFavorite = !deviceToToggle.IsFavorite;
+                SaveDevicesToJson();
+                UpdateFavoritesPanel();
+            }
+        }
+    }
+}

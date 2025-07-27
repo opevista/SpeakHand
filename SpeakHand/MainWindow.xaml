@@ -1,0 +1,51 @@
+<Window x:Class="SpeakHand.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SpeakHand"
+        mc:Ignorable="d"
+        Title="SpeakHand" Height="350" Width="500">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Favorites Section -->
+        <GroupBox Header="Favorites" FontWeight="Bold">
+            <Grid>
+                <WrapPanel x:Name="FavoritesPanel" Margin="5"/>
+                <StackPanel x:Name="FavoritesEmptyPanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                    <Image x:Name="FavoritesEmptyImage"
+                           Width="64" Height="64"
+                           HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="FavoritesEmptyText"
+                               Text="Nothing here yet"
+                               Foreground="Gray" FontStyle="Italic" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <!-- Device Selection Section -->
+        <Grid Grid.Row="1" Margin="0,10,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="All Devices:" FontWeight="Bold"/>
+            <DockPanel Grid.Row="1" Margin="0,5,0,0">
+                <Button x:Name="ToggleFavoriteButton" Content="★" Width="40" DockPanel.Dock="Right" Margin="5,0,0,0" Click="ToggleFavoriteButton_Click" ToolTip="Add/Remove Favorite"/>
+                <ComboBox x:Name="SpeakerComboBox" VerticalContentAlignment="Center"/>
+            </DockPanel>
+        </Grid>
+        
+        <!-- Control Buttons Section -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button x:Name="ResetButton" Content="Reset" Width="80" Margin="0,0,10,0" Click="ResetButton_Click" ToolTip="Reset favorites and rescan"/>
+            <Button x:Name="ScanButton" Content="Rescan Devices" Width="120" Margin="0,0,10,0" Click="ScanButton_Click"/>
+            <Button x:Name="SetDefaultButton" Content="Set as Default" Width="120" Click="SetDefaultButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
