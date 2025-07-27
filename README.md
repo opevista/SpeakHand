@@ -11,7 +11,8 @@ Windows用のシンプル＆モダンなオーディオデバイス切り替え�
 
 ## スクリーンショット
 
-![screenshot](screenshot.png)  
+![screenshot](screenshot1.png)  
+![screenshot](screenshot2.png)  
 
 ## 使い方
 
